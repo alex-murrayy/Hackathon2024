@@ -5,8 +5,6 @@ import ball
 
 cap = cv2.VideoCapture("/Users/alex/Code/Hackathon2024/RPReplay_Final1731175138.mov")
 
-
-
 def main():
 
     while cap.isOpened():
@@ -16,10 +14,12 @@ def main():
 
         frame = cv2.flip(frame, 1)
 
-        cv2.imshow('Hand Tracking', frame)
+        cv2.imshow('video', frame)
 
         if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
 
     cap.release()
     cv2.destroyAllWindows()
+
+main()

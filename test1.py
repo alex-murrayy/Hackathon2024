@@ -1,13 +1,12 @@
 import cv2
 import numpy as np
 
+# finds the color of the two kits
 def findColor(): 
-    
     img = cv2.imread("football.jpg")
 
     # Color contrator (can ignore)
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-
 
     kernel_size = 7
     blurred = cv2.GaussianBlur(img_hsv,(kernel_size, kernel_size),0)
@@ -27,7 +26,20 @@ def findColor():
         if area > 200 and area < 10000:
             print(area)
             x, y, w, h = cv2.boundingRect(contour)  # Get bounding box
-            cv2.circle(img, (int(x+w/2), int(y+h/2)), 10, (255, 0, 0), 2)
+
+
+            #cv2.circle(img, (int(x+w/2), int(y+h/2)), 10, (255, 0, 0), 2)
+
+            pixel_color = img[int(y+h/2), int(x+w/2)] 
+
+            if pixel_color[0] > 200 and pixel_color[1] > 200 and pixel_color[2] > 200:  
+                cv2.circle(img, (int(x+w/2), int(y+h/2)), 10, (255, 0, 0), 2)
+            else:
+                cv2.circle(img, (int(x+w/2), int(y+h/2)), 10, (0, 0, 255), 2)
+
+            print(pixel_color)
+
+
             if y > 200:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Draw rectangle
     cv2.imshow("lol", img)
