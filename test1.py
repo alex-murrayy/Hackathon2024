@@ -27,7 +27,6 @@ def findColor():
             print(area)
             x, y, w, h = cv2.boundingRect(contour)  # Get bounding box
 
-
             #cv2.circle(img, (int(x+w/2), int(y+h/2)), 10, (255, 0, 0), 2)
 
             pixel_color = img[int(y+h/2), int(x+w/2)] 
