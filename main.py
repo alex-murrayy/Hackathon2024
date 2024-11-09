@@ -1,6 +1,9 @@
-import cv2
+import cv2 
+import attacker
+import defender
+import ball 
 
-cap = cv2.VideoCapture()
+cap = cv2.VideoCapture("/Users/alex/Code/Hackathon2024/RPReplay_Final1731175138.mov")
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -9,9 +12,7 @@ while cap.isOpened():
 
     frame = cv2.flip(frame, 1)
 
-    pupil_detector = pupil.PupilDetection(frame)
-    pupil_detector.start_detection()
-    
+    cv2.imshow('Hand Tracking', frame)
 
     if cv2.waitKey(5) & 0xFF == ord('q'):
             break
