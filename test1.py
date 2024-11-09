@@ -55,6 +55,9 @@ def main():
     kernel_size = 7
     blurred = cv2.GaussianBlur(img_hsv,(kernel_size, kernel_size),0)
     
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    
     # Define range of green color in HSV
     lower_green = np.array([40, 50, 50])
     upper_green = np.array([80, 255, 255])
@@ -64,10 +67,25 @@ def main():
     # using a findContours() function 
     contours, _ = cv2.findContours( 
     mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
     for contour in contours: 
-
+        
         area=cv2.contourArea(contour)
         if area > 200 and area < 10000:
+        
+            x, y, w, h = cv2.boundingRect(contour)
+        
+            mask = np.zeros_like(gray, np.uint8)
+            cv2.drawContours(mask, [contour], -1, 255, -1)
+            
+            cv2.imshow("lol", mask)
+            cv2.waitKey(0)
+            
+            jersey_color = cv2.mean(img, mask=mask)[:3]
+            cv2.drawContours(img, [contour], -1, jersey_color, -1)
+
+            print("average pixel color: ", jersey_color)
+        
             print(area)
             x, y, w, h = cv2.boundingRect(contour)  # Get bounding box
             if y > 200:
