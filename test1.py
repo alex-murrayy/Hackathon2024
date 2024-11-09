@@ -24,7 +24,7 @@ def findColor():
 
         area=cv2.contourArea(contour)
         if area > 200 and area < 10000:
-            print(area)
+            #print(area)
             x, y, w, h = cv2.boundingRect(contour)  # Get bounding box
 
             #cv2.circle(img, (int(x+w/2), int(y+h/2)), 10, (255, 0, 0), 2)
@@ -38,11 +38,21 @@ def findColor():
 
             print(pixel_color)
 
-
             if y > 200:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Draw rectangle
     cv2.imshow("lol", img)
     cv2.waitKey(0)
+
+def findSameTeam(team1_colors, team2_colors, pixel_color):
+    if (len(team1_colors) == 0):
+        team1_colors.append(pixel_color)
+    elif (team1_colors != 0):
+        if (abs(int(team1_colors[0][0]) - int(pixel_color[0])) <= 10
+            and abs(int(team1_colors[0][1]) - int(pixel_color[1])) <= 10
+            and abs(int(team1_colors[0][2]) - int(pixel_color[2])) <= 10):
+            team1_colors.append(pixel_color)
+        else:
+            team2_colors.append(pixel_color)
 
 
 def main():
@@ -67,6 +77,9 @@ def main():
     # using a findContours() function 
     contours, _ = cv2.findContours( 
     mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    team1_colors = [] 
+    team2_colors = [] 
     
     for contour in contours: 
         
@@ -78,18 +91,30 @@ def main():
             mask = np.zeros_like(gray, np.uint8)
             cv2.drawContours(mask, [contour], -1, 255, -1)
             
-            cv2.imshow("lol", mask)
-            cv2.waitKey(0)
+            #cv2.imshow("lol", mask)
+            #cv2.waitKey(0)
             
             jersey_color = cv2.mean(img, mask=mask)[:3]
             cv2.drawContours(img, [contour], -1, jersey_color, -1)
 
-            print("average pixel color: ", jersey_color)
+            #print("average pixel color: ", jersey_color)
+
+            findSameTeam(team1_colors, team2_colors, jersey_color)
         
-            print(area)
+            #print(area)
             x, y, w, h = cv2.boundingRect(contour)  # Get bounding box
             if y > 200:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Draw rectangle
+
+    for i in range(len(team1_colors)):
+        print(team1_colors[i])
+
+    print("TEAM 2")
+
+    for i in range(len(team2_colors)):
+        print(team2_colors[i])
+         
+
     cv2.imshow("lol", img)
     cv2.waitKey(0)
     
@@ -123,4 +148,4 @@ def lines():
     
     
 if __name__ == "__main__":
-    findColor()
+    main()
