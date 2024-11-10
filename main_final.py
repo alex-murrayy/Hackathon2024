@@ -1,17 +1,6 @@
 import cv2
 import numpy as np
 
-from sklearn.cluster import KMeans
-
-def seperateAveragesIntoCategories(average_colors):
-    kmeans = KMeans(n_clusters=3, random_state=0).fit(average_colors)
-
-    # Get cluster labels (0 or 1)
-    labels = kmeans.labels_
-
-    # Separate the points into two categories
-    print("Category 1:", labels)
-
 def get_line_on_original_image(point1, point2, transform):
     M_inv = np.linalg.inv(transform)
     transformed_p1 = np.dot(M_inv, [point1[0], point1[1], 1])
@@ -24,9 +13,25 @@ def get_line_on_original_image(point1, point2, transform):
     transformed_p2 = [int(i) for i in transformed_p2][:2]
     return transformed_p1, transformed_p2
 
-
+def warp(image):
+    pts1 = np.float32([[95, 17], [805, 17],
+                       [-150, 349], [1100, 349]])
+    pts2 = np.float32([[0, 0], [700, 0],
+                       [0, 500], [700, 500]])
+     
+    # Apply Perspective Transform Algorithm
+    matrix = cv2.getPerspectiveTransform(pts1, pts2)
+    result = cv2.warpPerspective(image, matrix, (700, 500))
+    return result, matrix
+    
+    
 def main():
-    cap = cv2.VideoCapture("RPReplay_Final1731194189.mov")
+    filename = input("Enter filename to get offsides from: ")
+    try:
+        cap = cv2.VideoCapture(filename)
+    except Exception:
+        cap = cv2.VideoCapture("RPReplay_Final1731194189.mov") #default file
+        
     while(cap.isOpened()):
         ret, frame = cap.read()
         if not ret:
@@ -87,17 +92,7 @@ def main():
     
 
 
-def warp(image):
-    pts1 = np.float32([[95, 17], [805, 17],
-                       [-150, 349], [1100, 349]])
-    pts2 = np.float32([[0, 0], [700, 0],
-                       [0, 500], [700, 500]])
-     
-    # Apply Perspective Transform Algorithm
-    matrix = cv2.getPerspectiveTransform(pts1, pts2)
-    result = cv2.warpPerspective(image, matrix, (700, 500))
-    return result, matrix
-    
+
     
 if __name__ == "__main__":
     main()
